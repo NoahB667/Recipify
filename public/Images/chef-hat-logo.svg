@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .logo { fill: #E67E22; }
+    </style>
+    <!-- Chef hat design -->
+    <path class="logo" d="
+        M 20 60 
+        C 20 45 35 40 50 40
+        C 65 40 80 45 80 60
+        C 80 75 65 70 50 70
+        C 35 70 20 75 20 60
+        Z
+        M 35 70
+        L 35 85
+        L 65 85
+        L 65 70
+        M 30 85
+        L 70 85
+        A 5 5 0 0 1 70 90
+        L 30 90
+        A 5 5 0 0 1 30 85
+        Z
+        M 45 40
+        C 45 25 55 25 55 40
+        L 45 40
+        Z
+    "/>
+</svg>

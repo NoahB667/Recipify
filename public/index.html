@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipify</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="Images/chef-hat.png" alt="Chef hat logo" width="50">
+            <h2>Recipify</h2>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            <div class="message assistant-message">
+                Hello! I'm your recipe assistant. Share your ingredients with me, and I'll help you create delicious recipes.
+            </div>
+        </div>
+    </div>
+
+    <div class="input-container">
+        <div class="input-box">
+            <textarea 
+                id="ingredients" 
+                placeholder="Enter your ingredients here (e.g., chicken, rice, tomatoes)"
+                rows="1"
+            ></textarea>
+            <button class="send-button" id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
