@@ -20,11 +20,27 @@ const client = new OpenAI({
 app.post("/api/recipe", async (req, res) => {
   const ingredients = req.body.ingredients;
 
+  // Validate ingredients input
+  if (!ingredients || typeof ingredients !== "string" || ingredients.trim() === "") {
+    return res.status(400).json({ error: "Invalid ingredients input. Please provide a comma-separated list of ingredients." });
+  }
+
   try {
+    // Suggest recipe names using GPT-4o
     const recipeNames = await suggestRecipeNames(ingredients);
 
+    if (!recipeNames || recipeNames.length === 0) {
+      return res.status(404).json({ error: "No recipe suggestions found for the given ingredients." });
+    }
+
+    // Get recipe details from Edamam API
     const recipe = await getRecipeDetails(recipeNames[0]);
 
+    if (!recipe) {
+      return res.status(404).json({ error: "No recipe details found for the suggested recipe." });
+    }
+
+    // Respond with recipe details
     res.json({
       name: recipe.label,
       calories: recipe.calories,
@@ -37,14 +53,14 @@ app.post("/api/recipe", async (req, res) => {
     });
     
   } catch (err) {
-    console.error(err);
-    res.json({ error: "Something went wrong." });
+    console.error("Error processing recipe request:", err);
+    res.status(500).json({ error: "Something went wrong while processing your request." });
   }
 });
 
 const suggestRecipeNames = async (ingredients) => {
   try {
-    // Ask GPT for 3 recipe ideas
+    // Ask GPT-4o for 3 recipe ideas
     const gptResponse = await client.chat.completions.create({
       messages: [
         {
@@ -64,7 +80,7 @@ const suggestRecipeNames = async (ingredients) => {
     // Return recipes
     return recipes;
   } catch (err) {
-    throw new Error("Could not suggest recipies:" + err);
+    throw new Error("Could not suggest recipes:" + err);
   }
 };
 
@@ -91,7 +107,7 @@ const getRecipeDetails = async (recipeName) => {
     return hit.recipe;
  
   } catch (err) {
-    throw new Error("Could not retrieve recipy details:" + err);
+    throw new Error("Could not retrieve recipe details:" + err);
   }
 }
 

@@ -30,7 +30,7 @@ header h2 {
 
 .chat-container {
     max-width: 800px;
-    margin: 120px auto 100px;
+    margin: 0 auto;
     padding: 20px;
 }
 
@@ -45,10 +45,30 @@ header h2 {
     padding: 20px;
     border-radius: 8px;
     flex-direction: column;
+    box-shadow: #1A1614 0px 0px 10px;
 }
 
 .assistant-message {
     background-color: #2C2825;
+    border: 1px solid #3D332F;
+    align-self: flex-start;
+    text-align: left;
+}
+
+.assistant-message a {
+    color: #fff;
+}
+
+.assistant-message a:hover {
+    color: #E67E22;
+}
+
+.user-message {
+    background-color: #2C2825;
+    color: #fff;
+    border: 1px solid #3D332F;
+    align-self: flex-end;
+    text-align: right;
 }
 
 .input-container {

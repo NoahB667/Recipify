@@ -1,4 +1,4 @@
-@startuml
+@startuml Recipify
 
 component frontend
 component app.js
@@ -6,8 +6,8 @@ component openAIAPI
 component EdamamAPI
 
 
-frontend --> app.js
-app.js --> openAIAPI: query API
+frontend --> app.js: User inputs ingredients
+app.js --> openAIAPI: query OpenAI API with ingredients
 openAIAPI --> app.js: response with recipe names
 app.js --> EdamamAPI: query Edamam API with recipe name
 EdamamAPI --> app.js: response with recipe details
