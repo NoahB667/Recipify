@@ -18,29 +18,47 @@ const client = new OpenAI({
 });
 
 app.post("/api/recipe", async (req, res) => {
-  const ingredients = req.body.ingredients;
+  const {ingredients, recipeCount} = req.body;
 
   // Validate ingredients input
   if (!ingredients || typeof ingredients !== "string" || ingredients.trim() === "") {
     return res.status(400).json({ error: "Invalid ingredients input. Please provide a comma-separated list of ingredients." });
   }
 
+  // Validate recipeCount input
+  const count = parseInt(recipeCount, 10);
+  if (isNaN(count) || count < 1 || count > 10) {
+    return res.status(400).json({ error: "Invalid recipe count. Please provide a number between 1 and 10." });
+  }
+
   try {
     // Suggest recipe names using GPT-4o
-    const recipeNames = await suggestRecipeNames(ingredients);
+    const recipeNames = await suggestRecipeNames(ingredients, count);
 
     if (!recipeNames || recipeNames.length === 0) {
       return res.status(404).json({ error: "No recipe suggestions found for the given ingredients." });
     }
 
-    // Get recipe details from Edamam API
-    const recipe = await getRecipeDetails(recipeNames[0]);
+    // Respond with the list of suggested recipes
+    res.json({recipes: recipeNames });
+  } catch (err) {
+    console.error("Error processing recipe request:", err);
+    res.status(500).json({ error: "Something went wrong while processing your request." });
+  }
+});
+
+app.post("/api/recipe/details", async (req, res) => {
+  const {recipeName} = req.body;
+
+  try {
+    // Fetch recipe details from Edamam API
+    const recipe = await getRecipeDetails(recipeName);
 
     if (!recipe) {
-      return res.status(404).json({ error: "No recipe details found for the suggested recipe." });
+      return res.status(404).json({ error: "No details found for the selected recipe." });
     }
 
-    // Respond with recipe details
+    // Respond with the recipe details
     res.json({
       name: recipe.label,
       calories: recipe.calories,
@@ -51,21 +69,20 @@ app.post("/api/recipe", async (req, res) => {
       cuisineType: recipe.cuisineType,
       mealType: recipe.mealType,
     });
-    
   } catch (err) {
-    console.error("Error processing recipe request:", err);
-    res.status(500).json({ error: "Something went wrong while processing your request." });
+    console.error("Error fetching recipe details:", err);
+    res.status(500).json({ error: "Could not retrieve recipe details." });
   }
 });
 
-const suggestRecipeNames = async (ingredients) => {
+const suggestRecipeNames = async (ingredients, count) => {
   try {
-    // Ask GPT-4o for 3 recipe ideas
+    // Ask GPT-4o for the desired number of recipe suggestions
     const gptResponse = await client.chat.completions.create({
       messages: [
         {
           role: "user",
-          content: `Suggest 3 recipes using ${ingredients}. Just list the names.`,
+          content: `Suggest ${count} recipes using ${ingredients}. Just list the names.`,
         },
       ],
       model: "gpt-4o",
@@ -78,7 +95,7 @@ const suggestRecipeNames = async (ingredients) => {
       .map((line) => line.replace(/^\d+\.\s*/, "").trim());
 
     // Return recipes
-    return recipes;
+    return recipes.slice(0, count); // Ensure the number of recipes does not exceed the requested count
   } catch (err) {
     throw new Error("Could not suggest recipes:" + err);
   }
@@ -112,5 +129,5 @@ const getRecipeDetails = async (recipeName) => {
 }
 
 app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
+  console.log(`Server is listening on http://localhost:${PORT}`);
 });
