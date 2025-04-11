@@ -56,11 +56,5 @@ node app.js
 The server will start on http://localhost:5000.
 
 ## Preview
-
-
-## Notes
-GPT will suggest 3 recipes, and the app will automatically fetch details for the first one.
-
-Make sure your API keys are valid and not rate-limited.
-
-Designed for educational and demo purposes. Free tiers of the APIs may have limitations.
+![alt text](image.png)
+![alt text](image-1.png)
